@@ -1,0 +1,44 @@
+#include <Servo.h>
+#define echoPin 7 
+#define trigPin 8 
+#define LEDPin 13 
+
+Servo myservo;
+int maximumRange = 200; //kebutuhan akan maksimal range
+int minimumRange = 0.1; //kebutuhan akan minimal range
+long duration, distance; //waktu untuk kalkulasi jarak
+ 
+void setup() {
+Serial.begin (9600); //inisialiasasi komunikasi serial
+//deklarasi pin
+pinMode(trigPin, OUTPUT);
+pinMode(echoPin, INPUT);
+myservo.attach(2);
+}
+ 
+void loop() {
+
+digitalWrite(trigPin, LOW);delayMicroseconds(2);
+digitalWrite(trigPin, HIGH);delayMicroseconds(10);
+digitalWrite(trigPin, LOW);
+duration = pulseIn(echoPin, HIGH);
+ 
+//perhitungan untuk dijadikan jarak
+distance = duration/58.2;
+ 
+/* Kirim angka negatif ke komputer dan Turn LED ON 
+untuk menunjukkan "di luar jangkauan" */
+ 
+/*Kirim jarak ke komputer menggunakan Serial protokol, dan
+menghidupkan LED OFF untuk menunjukkan membaca sukses. */
+Serial.println("Jarak = "+String(distance)+ " CM");
+if (distance < 40){
+  myservo.write(180);
+}
+else{
+  myservo.write(0);
+}
+ 
+//waktu tunda 50mS
+delay(10);
+}
